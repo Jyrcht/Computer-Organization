@@ -20,6 +20,9 @@
     <ClInclude Include="Main.h" />
     <ClInclude Include="SHA-256.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Key.dat" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{EE296410-0FC6-4BA1-843C-B9E07B9C2FCC}</ProjectGuid>
     <RootNamespace>CompOrg</RootNamespace>
