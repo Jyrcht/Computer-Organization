@@ -1,6 +1,7 @@
 // EncryptData.cpp
 //
 // This file uses the input data and key information to encrypt the input data
+//Check out this cool comment
 //
 
 #include "Main.h"
