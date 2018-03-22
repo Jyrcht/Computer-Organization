@@ -1,0 +1,21 @@
+#CBEDA_12
+
+C)Reverse bit order
+00101101
+10110100
+
+B)Swap Nibbles
+11010010
+00101101
+
+E)Code Table Swap
+11100001            //0xE1
+CodeTable[11100001] //CodeTable[0xE1]
+
+D)Rotate hi nibble left, lo nibble right
+10110100 //1011 0100
+01110010 //0111 0010
+
+A)Rotate 1 bit to the left		
+10100101
+01001011
