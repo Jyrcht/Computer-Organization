@@ -9,9 +9,9 @@
 #include <io.h>
 
 // Defines
-// #define CBEDA\12
+// #define CRYPTO_ORDER
 
-#define CRYPTO_ORDER "ABCDE\0"
+#define CRYPTO_ORDER "CBEDA\12"
 
 // Structures
 
