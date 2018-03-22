@@ -9,7 +9,7 @@
 #include <io.h>
 
 // Defines
-// #define TEST_CODE
+// #define CBEDA
 
 #define CRYPTO_ORDER "ABCDE\0"
 
