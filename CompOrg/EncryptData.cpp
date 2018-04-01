@@ -24,7 +24,7 @@ int encryptData(char *data, int dataLength)
 		// (gptrPasswordHash or gPasswordHash), (gptrKey or gkey), gNumRounds
 		
 		xor ecx, ecx; //counter for reading in data
-		xor ebx, ebx; //counter for ind. parts
+		xor ebx, ebx; 
 		xor edx, edx; //register for holding current byte of data (in dl)
 		mov edi, data; //address of first element in data into edi
 
@@ -44,7 +44,6 @@ int encryptData(char *data, int dataLength)
 	END_C:
 		
 		mov dl, dh;
-		xor ebx, ebx;
 
 	PART_B:
 		shl dh, 4;
@@ -52,7 +51,32 @@ int encryptData(char *data, int dataLength)
 		or dl, dh;
 	END_B:
 
+	PART_E :
+		lea esi, gkey;
+		movzx ebx, dl;
+		mov dl, byte ptr[esi+ebx];
+	END_E:
 
+	PART_D :
+		xor ebx, ebx;
+		mov dh, dl;
+		jmp HIGH_NIBBLE;
+	HIGH_NIBBLE:
+		and dh, 0xF0;
+		rol dh,1;
+		jnc LOWER_NIBBLE; //bypass fixing the one if 0
+		or dh, 0x10;
+	LOWER_NIBBLE:
+		and dl, 0x0F;
+		rcr dl, 1;
+		jnc END_D; //bypass fixing the one if 0
+		or dl, 8;
+	END_D:
+		or dl, dh;
+
+	PART_A:
+		rol dl, 1;
+	END_A:
 
 		mov byte ptr[edi + ecx], dl;
 		inc ecx;

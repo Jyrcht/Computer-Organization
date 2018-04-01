@@ -16,6 +16,13 @@ D)Rotate hi nibble left, lo nibble right
 10110100 //1011 0100
 01110010 //0111 0010
 
+10110000
+01100000
+
+clear lower nibble
+rcl
+or lsb of nibble with cf -jc
+
 A)Rotate 1 bit to the left		
 10110101
-10110101
+01101011
