@@ -39,4 +39,7 @@
   <ItemGroup>
     <None Include="..\Key.dat" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Comp Org crypto code.txt" />
+  </ItemGroup>
 </Project>

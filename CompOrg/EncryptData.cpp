@@ -23,17 +23,31 @@ int encryptData(char *data, int dataLength)
 		// you will need to reference some of these global variables
 		// (gptrPasswordHash or gPasswordHash), (gptrKey or gkey), gNumRounds
 		
-		xor ecx, ecx //set ecx to zero
-		mov edi, data //address of first element in data into edi
+		xor ecx, ecx; //counter for reading in data
+		xor ebx, ebx; //counter for ind. parts
+		xor dh, dh;
+		mov edi, data; //address of first element in data into edi
+	READ_DATA:
+		mov dl, byte ptr[edi + ecx]; //move current byte into dl
+	PART_C:
+		shl dh, 1;
+		rcr dl, 1;
+		setc al;
+		add dh, al;
+		inc bl;
+		cmp bl, 8;
+		je PART_B;
+		jmp PART_C;
+	PART_B:
 
-		READ_DATA:     //Label for the beginning of the loop that reads the data, byte for byte
-			xor byte ptr[edi + ecx], 1 //xor current byte with 1
-			inc ecx //counter++
-			cmp ecx, dataLength //check for eof
-			je DONE //exit if eof
-			jmp READ_DATA //jumps to beginning of loop
+		mov byte ptr[edi + ecx], dh;
 
-		DONE:      //Label for exiting the READ_DATA loop
+		inc ecx;
+		cmp ecx, dataLength;
+		je DONE;
+		jmp READ_DATA;
+
+	DONE:      
 
 	}
 

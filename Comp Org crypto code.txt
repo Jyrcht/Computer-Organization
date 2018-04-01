@@ -2,9 +2,9 @@
 
 C)Reverse bit order
 00101101
-10110100
 
-B)Swap Nibbles
+B)Swap Nibbles 
+11010010
 11010010
 00101101
 
@@ -17,5 +17,5 @@ D)Rotate hi nibble left, lo nibble right
 01110010 //0111 0010
 
 A)Rotate 1 bit to the left		
-10100101
-01001011
+10110101
+10110101
