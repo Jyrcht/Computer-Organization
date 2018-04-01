@@ -25,23 +25,36 @@ int encryptData(char *data, int dataLength)
 		
 		xor ecx, ecx; //counter for reading in data
 		xor ebx, ebx; //counter for ind. parts
-		xor dh, dh;
+		xor edx, edx; //register for holding current byte of data (in dl)
 		mov edi, data; //address of first element in data into edi
+
 	READ_DATA:
 		mov dl, byte ptr[edi + ecx]; //move current byte into dl
+		//jmp PART_B;
+
 	PART_C:
 		shl dh, 1;
 		rcr dl, 1;
 		setc al;
-		add dh, al;
+		or dh, al;
 		inc bl;
 		cmp bl, 8;
-		je PART_B;
+		je END_C;
 		jmp PART_C;
+	END_C:
+		
+		mov dl, dh;
+		xor ebx, ebx;
+
 	PART_B:
+		shl dh, 4;
+		shr dl, 4;
+		or dl, dh;
+	END_B:
 
-		mov byte ptr[edi + ecx], dh;
 
+
+		mov byte ptr[edi + ecx], dl;
 		inc ecx;
 		cmp ecx, dataLength;
 		je DONE;
