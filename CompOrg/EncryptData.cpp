@@ -30,7 +30,6 @@ int encryptData(char *data, int dataLength)
 
 	READ_DATA:
 		mov dl, byte ptr[edi + ecx]; //move current byte into dl
-		//jmp PART_B;
 
 	PART_C:
 		shl dh, 1;
@@ -41,8 +40,7 @@ int encryptData(char *data, int dataLength)
 		cmp bl, 8;
 		je END_C;
 		jmp PART_C;
-	END_C:
-		
+	END_C:		
 		mov dl, dh;
 
 	PART_B:
@@ -63,7 +61,7 @@ int encryptData(char *data, int dataLength)
 		jmp HIGH_NIBBLE;
 	HIGH_NIBBLE:
 		and dh, 0xF0;
-		rol dh,1;
+		rcl dh,1;
 		jnc LOWER_NIBBLE; //bypass fixing the one if 0
 		or dh, 0x10;
 	LOWER_NIBBLE:
