@@ -2,7 +2,8 @@
 //
 // This file uses the input data and key information to decrypt the input data
 //
-// Let's test something over here eh?
+// CBEDA
+// ADEBC
 
 #include "Main.h"
 
@@ -24,17 +25,76 @@ int decryptData(char *data, int dataLength)
 		// you will need to reference some of these global variables
 		// (gptrPasswordHash or gPasswordHash), (gptrKey or gkey), gNumRounds
 
-		xor ecx, ecx //set ecx to zero
-		mov edi, data //address of first element in data into edi
+		xor ecx, ecx; //counter for reading in data
+		xor ebx, ebx;
+		xor edx, edx; //register for holding current byte of data (in dl)
+		mov edi, data; //address of first element in data into edi
 
-		READ_DATA:     //Label for the beginning of the loop that reads the data, byte for byte
-			xor byte ptr[edi + ecx], 1 //xor current byte with 1
-			inc ecx //counter++
-			cmp ecx, dataLength //check for eof
-			je DONE //exit if eof
-			jmp READ_DATA //jumps to beginning of loop
+	READ_DATA:
+		mov dl, byte ptr[edi + ecx]; //move current byte into dl
 
-		DONE:     //Label for exiting the READ_DATA loop
+	PART_A:
+		ror dl, 1;
+	END_A:
+
+	PART_D :
+		xor ebx, ebx;
+		mov dh, dl;
+		jmp HIGH_NIBBLE;
+	HIGH_NIBBLE:
+		and dh, 0xF0;
+		shr dh, 4;
+		rcr dh, 1;
+		jnc LOWER_NIBBLE; //bypass fixing the one if 0
+		or dh, 0x8;
+	LOWER_NIBBLE:
+		and dl, 0x0F;
+		shl dl, 4;
+		rcl dl, 1;
+		jnc END_D; //bypass fixing the one if 0
+		or dl, 0x10;
+	END_D:
+		shl dh, 4;
+		shr dl, 4;
+		or dl, dh;
+		nop;
+
+	PART_E:
+		lea esi, gkey;
+		movzx ebx, dl;
+		mov dl, byte ptr[esi+ebx];
+		mov dl, 0x75;
+	END_E:
+		nop;
+
+		mov dh, dl;
+	PART_B:
+		shl dh, 4;
+		shr dl, 4;
+		or dl, dh;
+	END_B:
+
+		xor ebx, ebx;
+	PART_C:
+		shl dh, 1;
+		rcr dl, 1;
+		setc al;
+		or dh, al;
+		inc bl;
+		cmp bl, 8;
+		je END_C;
+		jmp PART_C;
+	END_C:
+		mov dl, dh;
+
+		mov byte ptr[edi + ecx], dl;
+	    inc ecx;
+	    cmp ecx, dataLength;
+		je DONE;
+		jmp READ_DATA;
+
+	DONE:
+
 
 	}
 

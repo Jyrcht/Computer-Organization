@@ -30,7 +30,7 @@ int encryptData(char *data, int dataLength)
 
 	READ_DATA:
 		mov dl, byte ptr[edi + ecx]; //move current byte into dl
-
+		nop;
 	PART_C:
 		shl dh, 1;
 		rcr dl, 1;
