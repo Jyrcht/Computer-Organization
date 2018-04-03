@@ -1,0 +1,18 @@
+//Encrypt
+Init: EA
+#C: 57
+#B: 75
+#E: codeTable[75] = 1F
+#D: 2F
+#A: 5E
+
+//Decrypt
+Init: 5E
+#A: 2F
+#D: 1F
+#E: codeTable[1F] = 56 (Expecting 75), rest of code works if maunally put in hex 75 here
+#B: 65
+#C: A6
+
+01100101
+10100110

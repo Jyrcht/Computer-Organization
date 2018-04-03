@@ -62,8 +62,10 @@ int decryptData(char *data, int dataLength)
 	PART_E:
 		lea esi, gkey;
 		movzx ebx, dl;
-		mov dl, byte ptr[esi+ebx];
-		mov dl, 0x75;
+		mov dl, byte ptr[esi + ebx];
+		//[75]=1F
+		//[1F]=56
+
 	END_E:
 		nop;
 

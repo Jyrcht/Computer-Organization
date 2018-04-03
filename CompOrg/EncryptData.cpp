@@ -31,6 +31,7 @@ int encryptData(char *data, int dataLength)
 	READ_DATA:
 		mov dl, byte ptr[edi + ecx]; //move current byte into dl
 		nop;
+		//mov dl, 0x2D;
 	PART_C:
 		shl dh, 1;
 		rcr dl, 1;
@@ -43,18 +44,22 @@ int encryptData(char *data, int dataLength)
 	END_C:		
 		mov dl, dh;
 
+		//mov dh, 0xD2;
+		//mov dl, dh;
 	PART_B:
 		shl dh, 4;
 		shr dl, 4;
 		or dl, dh;
 	END_B:
 
+		//mov dl, 0xE1;
 	PART_E :
 		lea esi, gkey;
 		movzx ebx, dl;
-		mov dl, byte ptr[esi+ebx];
+		mov dl, byte ptr[gkey+ebx];
 	END_E:
 
+		//mov dl, 0xB4;
 	PART_D :
 		xor ebx, ebx;
 		mov dh, dl;
@@ -72,6 +77,7 @@ int encryptData(char *data, int dataLength)
 	END_D:
 		or dl, dh;
 
+		//mov dl, 0xA5;
 	PART_A:
 		rol dl, 1;
 	END_A:
