@@ -20,75 +20,61 @@ int encryptData(char *data, int dataLength)
 	// Also, you cannot use a lot of global variables - work with registers
 
 	__asm {
-		// you will need to reference some of these global variables
-		// (gptrPasswordHash or gPasswordHash), (gptrKey or gkey), gNumRounds
-		
-		xor ecx, ecx; //counter for reading in data
+
+		xor ecx, ecx;  //counter for reading in data
 		xor ebx, ebx; 
-		xor edx, edx; //register for holding current byte of data (in dl)
+		xor edx, edx;  //register for holding current byte of data (in dl)
 		mov edi, data; //address of first element in data into edi
-
+	
 	READ_DATA:
-		mov dl, byte ptr[edi + ecx]; //move current byte into dl
-		nop;
-		//mov dl, 0x2D;
+			mov dl, byte ptr[edi + ecx]; //move current byte into dl
 	PART_C:
-		shl dh, 1;
-		rcr dl, 1;
-		setc al;
-		or dh, al;
-		inc bl;
-		cmp bl, 8;
-		je END_C;
-		jmp PART_C;
+			shl dh, 1;
+			rcr dl, 1;
+			setc al;
+			or dh, al;
+			inc bl;
+			cmp bl, 8;
+			jne PART_C;
 	END_C:		
-		mov dl, dh;
+			mov dl, dh;
 
-		//mov dh, 0xD2;
-		//mov dl, dh;
 	PART_B:
-		shl dh, 4;
-		shr dl, 4;
-		or dl, dh;
+			shl dh, 4;
+			shr dl, 4;
+			or dl, dh;
 	END_B:
 
-		//mov dl, 0xE1;
-	PART_E :
-		lea esi, gkey;
-		movzx ebx, dl;
-		mov dl, byte ptr[gkey+ebx];
+	PART_E:
+			lea esi, gEncodeTable;
+			movzx edx, dl;
+			mov dl, byte ptr[esi + edx];
 	END_E:
 
-		//mov dl, 0xB4;
-	PART_D :
-		xor ebx, ebx;
-		mov dh, dl;
-		jmp HIGH_NIBBLE;
-	HIGH_NIBBLE:
-		and dh, 0xF0;
-		rcl dh,1;
-		jnc LOWER_NIBBLE; //bypass fixing the one if 0
-		or dh, 0x10;
-	LOWER_NIBBLE:
-		and dl, 0x0F;
-		rcr dl, 1;
-		jnc END_D; //bypass fixing the one if 0
-		or dl, 8;
+	PART_D:
+			xor ebx, ebx;
+			mov dh, dl;
+		HIGH_NIBBLE:
+			and dh, 0xF0;
+			rcl dh,1;
+			jnc LOWER_NIBBLE; //bypass fixing the one if 0
+			or dh, 0x10;
+		LOWER_NIBBLE:
+			and dl, 0x0F;
+			rcr dl, 1;
+			jnc END_D; //bypass fixing the one if 0
+			or dl, 8;
 	END_D:
-		or dl, dh;
+			or dl, dh;
 
-		//mov dl, 0xA5;
 	PART_A:
-		rol dl, 1;
+			rol dl, 1;
 	END_A:
 
-		mov byte ptr[edi + ecx], dl;
-		inc ecx;
-		cmp ecx, dataLength;
-		je DONE;
-		jmp READ_DATA;
-
-	DONE:      
+			mov byte ptr[edi + ecx], dl;
+			inc ecx;
+			cmp ecx, dataLength;
+			jne READ_DATA;     
 
 	}
 
