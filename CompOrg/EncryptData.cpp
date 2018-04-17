@@ -53,7 +53,12 @@ int encryptData(char *data, int dataLength)
 
 			
 	BIT_MANIPULATION:
-			xor eax, eax
+			push ebp //old ebp, located at [ebx]
+			mov ebp, esp //esp in ebx
+			push eax //[ebx-4] index saved on stack
+			push ebx //[ebx-8] hop count saved on stack CURRENT ESP IS HERE
+
+			xor eax, eax //free up eax and ebx for Part C
 			xor ebx, ebx
 	PART_C:
 			shl dh, 1;
@@ -73,7 +78,6 @@ int encryptData(char *data, int dataLength)
 			movzx edx, dl;
 			mov dl, byte ptr[esi + edx];
 	PART_D:
-			xor ebx, ebx;
 			mov dh, dl;
 		HIGH_NIBBLE:
 			and dh, 0xF0;
@@ -91,6 +95,12 @@ int encryptData(char *data, int dataLength)
 	PART_A:
 			rol dl, 1;
 
+
+			//beginning of loop back for inner for loop
+			//fix index & hop count while fixing stack
+			pop ebx
+			pop eax
+			pop ebp
 			mov byte ptr[edi+ ecx], dl;
 			inc ecx;
 			cmp ecx, dataLength;
