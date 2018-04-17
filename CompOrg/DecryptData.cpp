@@ -31,9 +31,9 @@ int decryptData(char *data, int dataLength)
 	READ_DATA:
 			mov dl, byte ptr[edi + ecx]; //move current byte into dl
 
+	BIT_MANIPULATION:
 	PART_A:
 			ror dl, 1;
-	END_A:
 
 	PART_D :
 			xor ebx, ebx;
@@ -60,14 +60,11 @@ int decryptData(char *data, int dataLength)
 			movzx edx, dl;
 			mov dl, byte ptr[esi + edx];
 
-	END_E:
-
 			mov dh, dl;
 	PART_B:
 			shl dh, 4;
 			shr dl, 4;
 			or dl, dh;
-	END_B:
 
 			xor ebx, ebx;
 	PART_C:
@@ -78,7 +75,7 @@ int decryptData(char *data, int dataLength)
 			inc bl;
 			cmp bl, 8;
 			jne PART_C;
-	END_C:
+
 			mov dl, dh;
 
 			mov byte ptr[edi + ecx], dl;

@@ -21,13 +21,40 @@ int encryptData(char *data, int dataLength)
 
 	__asm {
 
-		xor ecx, ecx;  //counter for reading in data
-		xor ebx, ebx; 
-		xor edx, edx;  //register for holding current byte of data (in dl)
-		mov edi, data; //address of first element in data into edi
-	
+		xor ecx, ecx   //counter for reading in data 
+		xor eax, eax   //starting point + other
+		xor ebx, ebx   //hop count + other
+		xor esi, esi 
+		xor edx, edx   //register for holding current byte of data (in dl)
+		mov edi, data
+
+	ROUNDS:
+		lea esi, gPasswordHash
+		//Starting point in ax
+		mov ah, [esi ]
+		mov al, [esi + 1]
+		//Hop count in bx
+		mov bh, [esi + 2]
+		mov bl, [esi + 3]
+		lea esi, gkey
+		test bx, bx
+		jne READ_DATA
+		mov bx, 0xFFFF
+
 	READ_DATA:
-			mov dl, byte ptr[edi + ecx]; //move current byte into dl
+			movzx dl, byte ptr[edi + ecx]; //move current byte into dl
+
+	HOPPING:
+			xor dl, [esi+eax] //xor with starting point
+			add eax, ebx //add the hop count
+			cmp eax, 0x10001 //cmp with 65537
+			jna BIT_MANIPULATION
+			sub eax, 0x10001
+
+			
+	BIT_MANIPULATION:
+			xor eax, eax
+			xor ebx, ebx
 	PART_C:
 			shl dh, 1;
 			rcr dl, 1;
@@ -35,22 +62,16 @@ int encryptData(char *data, int dataLength)
 			or dh, al;
 			inc bl;
 			cmp bl, 8;
-			jne PART_C;
-	END_C:		
+			jne PART_C;		
 			mov dl, dh;
-
 	PART_B:
 			shl dh, 4;
 			shr dl, 4;
 			or dl, dh;
-	END_B:
-
 	PART_E:
 			lea esi, gEncodeTable;
 			movzx edx, dl;
 			mov dl, byte ptr[esi + edx];
-	END_E:
-
 	PART_D:
 			xor ebx, ebx;
 			mov dh, dl;
@@ -69,9 +90,8 @@ int encryptData(char *data, int dataLength)
 
 	PART_A:
 			rol dl, 1;
-	END_A:
 
-			mov byte ptr[edi + ecx], dl;
+			mov byte ptr[edi+ ecx], dl;
 			inc ecx;
 			cmp ecx, dataLength;
 			jne READ_DATA;     
