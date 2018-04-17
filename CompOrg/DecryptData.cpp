@@ -23,20 +23,41 @@ int decryptData(char *data, int dataLength)
 
 	__asm {
 
-		xor ecx, ecx; //counter for reading in data
-		xor ebx, ebx;
-		xor edx, edx; //register for holding current byte of data (in dl)
-		mov edi, data; //address of first element in data into edi
+			xor ecx, ecx   //counter for reading in data 
+			xor eax, eax   //starting point + other
+			xor ebx, ebx   //hop count + other
+			xor esi, esi
+			xor edx, edx   //register for holding current byte of data (in dl)
+			mov edi, data
+
+	ROUNDS :
+			lea esi, gPasswordHash
+			//Starting point in ax
+			mov ah, [esi]
+			mov al, [esi + 1]
+			//Hop count in bx
+			mov bh, [esi + 2]
+			mov bl, [esi + 3]
+			lea esi, gkey
+			test bx, bx
+			jne READ_DATA
+			mov bx, 0xFFFF
 
 	READ_DATA:
 			mov dl, byte ptr[edi + ecx]; //move current byte into dl
 
+			push ebp //old ebp, located at [ebx]
+			mov ebp, esp //esp in ebx
+			push eax //[ebx-4] index saved on stack
+			push ebx //[ebx-8] hop count saved on stack CURRENT ESP IS HERE
+
 	BIT_MANIPULATION:
+
+
 	PART_A:
 			ror dl, 1;
 
 	PART_D :
-			xor ebx, ebx;
 			mov dh, dl;
 		HIGH_NIBBLE:
 			and dh, 0xF0;
@@ -66,6 +87,7 @@ int decryptData(char *data, int dataLength)
 			shr dl, 4;
 			or dl, dh;
 
+			xor eax, eax;
 			xor ebx, ebx;
 	PART_C:
 			shl dh, 1;
@@ -78,6 +100,19 @@ int decryptData(char *data, int dataLength)
 
 			mov dl, dh;
 
+	HOPPING:
+			pop ebx
+			pop eax
+			pop ebp
+
+			lea esi, gkey
+			xor dl, [esi + eax] //xor with keyfile[index]
+			add eax, ebx //add the hop count
+			cmp eax, 0x10001 //cmp with 65537
+			jnae NEXT
+			sub eax, 0x10001
+
+	NEXT:
 			mov byte ptr[edi + ecx], dl;
 			inc ecx;
 			cmp ecx, dataLength;

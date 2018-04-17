@@ -29,22 +29,22 @@ int encryptData(char *data, int dataLength)
 		mov edi, data
 
 	ROUNDS:
-		lea esi, gPasswordHash
-		//Starting point in ax
-		mov ah, [esi ]
-		mov al, [esi + 1]
-		//Hop count in bx
-		mov bh, [esi + 2]
-		mov bl, [esi + 3]
-		lea esi, gkey
-		test bx, bx
-		jne READ_DATA
-		mov bx, 0xFFFF
+			lea esi, gPasswordHash
+			//Starting point in ax
+			mov ah, [esi ]
+			mov al, [esi + 1]
+			//Hop count in bx
+			mov bh, [esi + 2]
+			mov bl, [esi + 3]
+			test bx, bx
+			jne READ_DATA
+			mov bx, 0xFFFF
 
 	READ_DATA:
 			movzx dl, byte ptr[edi + ecx]; //move current byte into dl
 
 	HOPPING:
+			lea esi, gkey
 			xor dl, [esi+eax] //xor with keyfile[index]
 			add eax, ebx //add the hop count
 			cmp eax, 0x10001 //cmp with 65537
