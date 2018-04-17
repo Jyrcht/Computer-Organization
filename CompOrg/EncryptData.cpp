@@ -45,10 +45,10 @@ int encryptData(char *data, int dataLength)
 			movzx dl, byte ptr[edi + ecx]; //move current byte into dl
 
 	HOPPING:
-			xor dl, [esi+eax] //xor with starting point
+			xor dl, [esi+eax] //xor with keyfile[index]
 			add eax, ebx //add the hop count
 			cmp eax, 0x10001 //cmp with 65537
-			jna BIT_MANIPULATION
+			jnae BIT_MANIPULATION
 			sub eax, 0x10001
 
 			
