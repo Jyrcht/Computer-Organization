@@ -11,14 +11,6 @@ int encryptData(char *data, int dataLength)
 {
 	int resulti = 0;
 
-	gdebug1 = 0;					// a couple of global variables that could be used for debugging
-	gdebug2 = 0;					// also can have a breakpoint in C code
-
-	// You can not declare any local variables in C, but should use resulti to indicate any errors
-	// Set up the stack frame and assign variables in assembly if you need to do so
-	// access the parameters BEFORE setting up your own stack frame
-	// Also, you cannot use a lot of global variables - work with registers
-
 	__asm {
 
 		xor ecx, ecx   //counter for reading in data 
@@ -28,18 +20,21 @@ int encryptData(char *data, int dataLength)
 		xor edx, edx   //register for holding current byte of data (in dl)
 		mov edi, data
 
+	//Outer For-loop
 	ROUNDS:
+			push ecx //push current round number to stack [esp]	
 			lea esi, gPasswordHash
 			//Starting point in ax
-			mov ah, [esi ]
-			mov al, [esi + 1]
+			mov ah, [esi + ecx*4]
+			mov al, [esi + 1 + ecx*4]
 			//Hop count in bx
-			mov bh, [esi + 2]
-			mov bl, [esi + 3]
+			mov bh, [esi + 2 + ecx*4]
+			mov bl, [esi + 3 + ecx*4]
+			xor ecx, ecx //Set ecx back to 0 for inner loop (before test because flags)
 			test bx, bx
 			jne READ_DATA
 			mov bx, 0xFFFF
-
+	//Inner For-loop
 	READ_DATA:
 			movzx dl, byte ptr[edi + ecx]; //move current byte into dl
 
@@ -96,15 +91,21 @@ int encryptData(char *data, int dataLength)
 			rol dl, 1;
 
 
-			//beginning of loop back for inner for loop
 			//fix index & hop count while fixing stack
 			pop ebx
 			pop eax
 			pop ebp
+			//loop back for inner for loop
 			mov byte ptr[edi+ ecx], dl;
 			inc ecx;
 			cmp ecx, dataLength;
-			jne READ_DATA;     
+			jne READ_DATA; 
+			//loop back for outer loop
+			pop ecx 
+			inc ecx //get round number and ++
+			cmp ecx, gNumRounds
+			jne ROUNDS
+
 
 	}
 
