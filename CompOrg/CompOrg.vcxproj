@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CryptoMain_Initial.cpp" />
+    <ClCompile Include="CryptoMain.cpp" />
     <ClCompile Include="DecryptData.cpp" />
     <ClCompile Include="EncryptData.cpp" />
     <ClCompile Include="SHA-256.cpp" />

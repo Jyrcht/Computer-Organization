@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CryptoMain_Initial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DecryptData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -25,6 +22,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SHA-256.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CryptoMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

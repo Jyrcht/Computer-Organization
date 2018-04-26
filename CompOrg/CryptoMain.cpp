@@ -156,6 +156,12 @@ int encryptFile(FILE *fptrIn, FILE *fptrOut)
 		return -1;
 	}
 
+	if (filesize == 0)					// 0 B, file has nothing
+	{
+		fprintf(stderr, "Error - Input file 0 bytes.\n\n");
+		return -1;
+	}
+
 	// use the password hash to encrypt
 	buffer = (char *) malloc(filesize);
 	if(buffer == NULL)
@@ -183,6 +189,12 @@ int decryptFile(FILE *fptrIn, FILE *fptrOut)
 	if(filesize > 0x1000000)					// 16 MB, file too large
 	{
 		fprintf(stderr, "Error - Input file too large.\n\n");
+		return -1;
+	}
+
+	if (filesize == 0)					// 0 B, file has nothing
+	{
+		fprintf(stderr, "Error - Input file 0 bytes.\n\n");
 		return -1;
 	}
 
